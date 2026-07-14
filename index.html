@@ -1,145 +1,282 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Portal de implantação e parametrização da plataforma Rainbow." />
   <title>Rainbow Setup Portal</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <header>
-    <h1>Rainbow Setup Portal</h1>
-    <p>Asistente guiado para recopilar la información necesaria para la parametrización de la plataforma.</p>
-  </header>
-  <div class="layout">
-    <aside>
-      <div class="progress-label"><span>Progreso</span><strong id="progressText">0%</strong></div>
-      <div class="bar"><span id="progressBar"></span></div>
-      <div class="steps" id="steps"></div>
-    </aside>
-    <main>
-      <div class="notice">Versión inicial: la información se guarda en este navegador. La conexión segura al banco de datos se habilitará en la siguiente etapa.</div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-      <section class="section active" data-title="Datos generales">
-        <h2>1. Datos generales</h2>
-        <p class="hint">Información básica del cliente y del proyecto de implementación.</p>
-        <div class="grid">
-          <div><label>Cliente / Razón social</label><input name="cliente" required></div>
-          <div><label>NIT / RFC / RUT</label><input name="identificacion" required></div>
-          <div><label>País</label><select name="pais"><option>México</option><option>Colombia</option><option>Chile</option><option>Brasil</option><option>Perú</option><option>Paraguay</option><option>Otro</option></select></div>
-          <div><label>Proyecto</label><input name="proyecto" placeholder="Ej.: Implementación Gestión de Terceros"></div>
-          <div><label>Responsable del proyecto</label><input name="responsable"></div>
-          <div><label>Correo</label><input type="email" name="correo"></div>
-          <div><label>Teléfono</label><input name="telefono"></div>
-          <div><label>Fecha objetivo de go-live</label><input type="date" name="golive"></div>
-        </div>
-      </section>
-
-      <section class="section" data-title="Estructura">
-        <h2>2. Estructura organizacional</h2>
-        <p class="hint">Defina cómo la empresa está organizada dentro de la plataforma.</p>
-        <div class="grid">
-          <div><label>¿Habrá más de una empresa?</label><select name="multiempresa"><option>Sí</option><option>No</option><option>Por definir</option></select></div>
-          <div><label>¿Existen sucursales / centros de trabajo?</label><select name="sucursales"><option>Sí</option><option>No</option><option>Por definir</option></select></div>
-          <div class="full"><label>Áreas, departamentos o centros de costo</label><textarea name="areas" placeholder="Ej.: Operaciones, Seguridad, RRHH, Mantenimiento..."></textarea></div>
-          <div class="full"><label>Cargos / funciones que deberán tener reglas documentales</label><textarea name="cargos" placeholder="Ej.: Electricista, Guardia, Operador de grúa, Visitante..."></textarea></div>
-        </div>
-      </section>
-
-      <section class="section" data-title="Contratistas">
-        <h2>3. Contratistas</h2>
-        <p class="hint">Configure el modelo de registro de contratistas, proveedores y subcontratistas.</p>
-        <div class="checkboxes">
-          <label class="check"><input type="checkbox" name="tipo_empresa_principal"> Empresa principal</label>
-          <label class="check"><input type="checkbox" name="tipo_contratista"> Contratista</label>
-          <label class="check"><input type="checkbox" name="tipo_subcontratista"> Subcontratista</label>
-          <label class="check"><input type="checkbox" name="tipo_proveedor"> Proveedor</label>
-          <label class="check"><input type="checkbox" name="tipo_visitante"> Visitante</label>
-          <label class="check"><input type="checkbox" name="tipo_otro"> Otro</label>
-        </div>
-        <div class="grid" style="margin-top:18px">
-          <div class="full"><label>Campos obligatorios para contratistas</label><textarea name="campos_contratistas" placeholder="Ej.: Razón social, identificación fiscal, responsable, correo, contrato..."></textarea></div>
-          <div class="full"><label>Reglas u observaciones</label><textarea name="reglas_contratistas"></textarea></div>
-        </div>
-      </section>
-
-      <section class="section" data-title="Trabajadores">
-        <h2>4. Trabajadores</h2>
-        <p class="hint">Seleccione los datos necesarios para el registro de trabajadores.</p>
-        <div class="checkboxes">
-          <label class="check"><input type="checkbox" name="trab_nombre" checked> Nombre completo</label>
-          <label class="check"><input type="checkbox" name="trab_documento" checked> Documento</label>
-          <label class="check"><input type="checkbox" name="trab_empresa" checked> Empresa</label>
-          <label class="check"><input type="checkbox" name="trab_cargo" checked> Cargo / función</label>
-          <label class="check"><input type="checkbox" name="trab_supervisor"> Supervisor</label>
-          <label class="check"><input type="checkbox" name="trab_centro_costo"> Centro de costo</label>
-          <label class="check"><input type="checkbox" name="trab_area"> Área</label>
-          <label class="check"><input type="checkbox" name="trab_fecha_ingreso"> Fecha de ingreso</label>
-          <label class="check"><input type="checkbox" name="trab_fecha_termino"> Fecha término</label>
-        </div>
-        <div class="grid" style="margin-top:18px"><div class="full"><label>Otros campos necesarios</label><textarea name="otros_trabajadores"></textarea></div></div>
-      </section>
-
-      <section class="section" data-title="Documentos">
-        <h2>5. Documentos y periodicidades</h2>
-        <p class="hint">Incluya los documentos exigidos para empresas, trabajadores, vehículos o bienes.</p>
-        <button class="mini" onclick="addDocRow()">+ Agregar documento</button>
-        <table id="docsTable">
-          <thead><tr><th>Tipo</th><th>Documento</th><th>Obligatorio</th><th>Periodicidad</th><th>Validación</th><th></th></tr></thead>
-          <tbody></tbody>
-        </table>
-      </section>
-
-      <section class="section" data-title="Reglas">
-        <h2>6. Reglas de asociación</h2>
-        <p class="hint">Indique qué documentos se asocian a cada cargo, función, empresa o actividad.</p>
-        <div class="grid">
-          <div class="full"><label>Reglas por cargo / función</label><textarea name="reglas_cargo" placeholder="Ej.: Operador de grúa → Examen médico + licencia + curso específico"></textarea></div>
-          <div class="full"><label>Reglas por empresa / contrato / actividad</label><textarea name="reglas_empresa"></textarea></div>
-          <div class="full"><label>Bloqueos de acceso o credencial</label><textarea name="bloqueos" placeholder="Ej.: Bloquear acceso cuando el documento obligatorio esté vencido o reprobado."></textarea></div>
-        </div>
-      </section>
-
-      <section class="section" data-title="Flujos">
-        <h2>7. Flujos de aprobación</h2>
-        <p class="hint">Defina quién aprueba cada tipo de documento y cómo será el flujo de validación.</p>
-        <div class="checkboxes">
-          <label class="check"><input type="checkbox" name="aprob_seguridad"> Seguridad / EHS</label>
-          <label class="check"><input type="checkbox" name="aprob_rrhh"> RRHH</label>
-          <label class="check"><input type="checkbox" name="aprob_operacion"> Operación</label>
-          <label class="check"><input type="checkbox" name="aprob_admin"> Administrador</label>
-          <label class="check"><input type="checkbox" name="aprob_ia"> Validación IA previa</label>
-          <label class="check"><input type="checkbox" name="aprob_dupla"> Doble aprobación</label>
-        </div>
-        <div class="grid" style="margin-top:18px"><div class="full"><label>Descripción del flujo esperado</label><textarea name="flujo_desc" placeholder="Ej.: Contratista carga → IA valida → EHS aprueba → acceso liberado"></textarea></div></div>
-      </section>
-
-      <section class="section" data-title="IA e integraciones">
-        <h2>8. IA, integraciones y reportes</h2>
-        <p class="hint">Seleccione validaciones automáticas, sistemas integrados y reportes necesarios.</p>
-        <div class="grid">
-          <div class="full"><label>Documentos para validación con IA</label><textarea name="ia_docs" placeholder="Ej.: PILA, F30, licencia, examen médico, certificado de curso..."></textarea></div>
-          <div class="full"><label>Reglas de IA esperadas</label><textarea name="ia_regras" placeholder="Ej.: Validar NIT, nombre, fecha de pago, vigencia, clase de riesgo..."></textarea></div>
-          <div><label>¿Habrá integración?</label><select name="integracao"><option>No</option><option>Sí - API</option><option>Sí - SFTP</option><option>Sí - SAP</option><option>Sí - Otro</option><option>Por definir</option></select></div>
-          <div><label>Notificaciones automáticas</label><select name="notificaciones"><option>Sí</option><option>No</option><option>Por definir</option></select></div>
-          <div class="full"><label>Reportes / dashboards requeridos</label><textarea name="reportes" placeholder="Ej.: Documentos vencidos, trabajadores activos, accesos, indicadores por empresa..."></textarea></div>
-        </div>
-      </section>
-
-      <section class="section" data-title="Revisión final">
-        <h2>9. Revisión final</h2>
-        <p class="hint">Revise el estado de la información antes de enviar al consultor Rainbow.</p>
-        <div class="summary" id="summary"></div>
-        <div class="actions" style="border:0;margin-top:18px"><button class="secondary" onclick="downloadJSON()">Descargar respuestas JSON</button><button class="primary" onclick="alert('Configuración enviada para revisión. En producción, esta acción enviaría los datos al consultor Rainbow.')">Enviar configuración</button></div>
-      </section>
-
-      <div class="actions">
-        <button class="ghost" onclick="prevStep()">Anterior</button>
-        <div><button class="secondary" onclick="saveData()">Guardar avance</button> <button class="primary" onclick="nextStep()">Siguiente</button></div>
+  <section id="loginView" class="login-view">
+    <div class="login-art" aria-hidden="true">
+      <div class="brand-mark">R</div>
+      <div>
+        <p class="eyebrow light">RAINBOW TECNOLOGIA</p>
+        <h1>Implantações mais simples, guiadas e organizadas.</h1>
+        <p>Centralize o levantamento de informações, acompanhe o progresso e prepare a parametrização da plataforma em um único lugar.</p>
       </div>
-    </main>
+      <div class="feature-list">
+        <span>✓ Projetos centralizados</span>
+        <span>✓ Wizard de parametrização</span>
+        <span>✓ Salvamento automático</span>
+      </div>
+    </div>
+
+    <div class="login-panel">
+      <form id="loginForm" class="login-card">
+        <div class="logo-row">
+          <div class="logo-symbol">R</div>
+          <div>
+            <strong>Rainbow Setup</strong>
+            <small>Portal de Implantação</small>
+          </div>
+        </div>
+        <div>
+          <p class="eyebrow">ACESSO AO PORTAL</p>
+          <h2>Bem-vinda</h2>
+          <p class="muted">Use o acesso demonstrativo para entrar nesta versão.</p>
+        </div>
+        <label>E-mail
+          <input id="loginEmail" type="email" value="erika@rainbowtec.com.br" required />
+        </label>
+        <label>Senha
+          <input id="loginPassword" type="password" value="rainbow123" required />
+        </label>
+        <button class="btn primary full" type="submit">Entrar</button>
+        <p class="demo-note">Acesso demonstrativo. A autenticação real será conectada ao Supabase.</p>
+      </form>
+    </div>
+  </section>
+
+  <div id="appView" class="app-shell hidden">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="logo-symbol">R</div>
+        <div><strong>Rainbow Setup</strong><small>Portal de Implantação</small></div>
+      </div>
+      <nav class="nav-list" aria-label="Navegação principal">
+        <button class="nav-item active" data-view="dashboard"><span>⌂</span> Dashboard</button>
+        <button class="nav-item" data-view="projects"><span>▣</span> Projetos</button>
+        <button class="nav-item" data-view="wizard"><span>✓</span> Parametrização</button>
+        <button class="nav-item" data-view="reports"><span>▤</span> Relatórios</button>
+        <button class="nav-item" data-view="settings"><span>⚙</span> Configurações</button>
+      </nav>
+      <div class="sidebar-footer">
+        <span class="status-dot"></span>
+        <div><strong>Versão 0.2</strong><small>Base produtiva inicial</small></div>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <button id="menuButton" class="icon-btn menu-btn" aria-label="Abrir menu">☰</button>
+        <div>
+          <p class="breadcrumb" id="breadcrumb">Dashboard</p>
+          <h2 id="pageTitle">Visão geral</h2>
+        </div>
+        <div class="topbar-actions">
+          <button class="icon-btn" title="Notificações">○</button>
+          <div class="user-menu">
+            <div class="avatar">EC</div>
+            <div><strong>Erika Chaves</strong><small>Consultora Rainbow</small></div>
+          </div>
+          <button id="logoutButton" class="btn subtle">Sair</button>
+        </div>
+      </header>
+
+      <main class="content">
+        <section id="dashboard" class="view active">
+          <div class="welcome-banner">
+            <div>
+              <p class="eyebrow light">RAINBOW SETUP PORTAL</p>
+              <h1>Olá, Erika 👋</h1>
+              <p>Acompanhe as implantações e continue de onde parou.</p>
+            </div>
+            <button class="btn white" data-action="new-project">+ Novo projeto</button>
+          </div>
+
+          <div class="metrics-grid">
+            <article class="metric-card"><span>Projetos ativos</span><strong id="metricProjects">3</strong><small>Em acompanhamento</small></article>
+            <article class="metric-card"><span>Em andamento</span><strong id="metricProgress">2</strong><small>Requerem preenchimento</small></article>
+            <article class="metric-card"><span>Concluídos</span><strong id="metricDone">1</strong><small>Prontos para validação</small></article>
+            <article class="metric-card"><span>Progresso médio</span><strong id="metricAverage">63%</strong><small>Todos os projetos</small></article>
+          </div>
+
+          <div class="section-heading">
+            <div><p class="eyebrow">PROJETOS RECENTES</p><h3>Implantações</h3></div>
+            <button class="text-btn" data-view-link="projects">Ver todos →</button>
+          </div>
+          <div id="dashboardProjects" class="project-grid"></div>
+        </section>
+
+        <section id="projects" class="view">
+          <div class="section-heading">
+            <div><p class="eyebrow">GESTÃO</p><h3>Projetos</h3><p class="muted">Crie, acompanhe e edite as implantações.</p></div>
+            <button class="btn primary" data-action="new-project">+ Novo projeto</button>
+          </div>
+          <div class="toolbar">
+            <input id="projectSearch" type="search" placeholder="Buscar cliente ou projeto..." />
+            <select id="projectStatusFilter"><option value="all">Todos os status</option><option value="Em andamento">Em andamento</option><option value="Concluído">Concluído</option><option value="Não iniciado">Não iniciado</option></select>
+          </div>
+          <div id="projectsTable" class="table-card"></div>
+        </section>
+
+        <section id="wizard" class="view">
+          <div class="wizard-header">
+            <div>
+              <p class="eyebrow">PARAMETRIZAÇÃO</p>
+              <h3 id="wizardProjectTitle">ODATA México</h3>
+              <p class="muted">Complete as etapas para preparar a configuração da plataforma.</p>
+            </div>
+            <div class="wizard-progress-box">
+              <div><span>Progresso</span><strong id="wizardPercent">0%</strong></div>
+              <div class="progress"><span id="wizardProgressBar"></span></div>
+            </div>
+          </div>
+
+          <div class="wizard-layout">
+            <aside class="wizard-sidebar"><div id="wizardSteps" class="wizard-steps"></div></aside>
+            <div class="wizard-card">
+              <div id="wizardNotice" class="notice">As respostas são salvas automaticamente neste navegador. A próxima versão conectará os dados ao Supabase.</div>
+
+              <section class="wizard-section active" data-title="Dados gerais">
+                <h2>Dados gerais</h2><p class="hint">Informações básicas do cliente e do projeto de implantação.</p>
+                <div class="form-grid">
+                  <label>Cliente / Razão social<input name="cliente" required /></label>
+                  <label>Identificação fiscal<input name="identificacao" placeholder="NIT, RFC, RUT ou CNPJ" /></label>
+                  <label>País<select name="pais"><option>México</option><option>Colômbia</option><option>Chile</option><option>Brasil</option><option>Peru</option><option>Paraguai</option><option>Outro</option></select></label>
+                  <label>Nome do projeto<input name="projeto" placeholder="Ex.: Implantação Gestão de Terceiros" /></label>
+                  <label>Responsável do cliente<input name="responsavel" /></label>
+                  <label>E-mail<input type="email" name="correo" /></label>
+                  <label>Consultor Rainbow<input name="consultor" value="Erika Chaves" /></label>
+                  <label>Data prevista de go-live<input type="date" name="golive" /></label>
+                </div>
+              </section>
+
+              <section class="wizard-section" data-title="Estrutura organizacional">
+                <h2>Estrutura organizacional</h2><p class="hint">Defina como as empresas, filiais e áreas serão organizadas.</p>
+                <div class="form-grid">
+                  <label>Haverá mais de uma empresa?<select name="multiempresa"><option>Sim</option><option>Não</option><option>A definir</option></select></label>
+                  <label>Existem filiais ou centros de trabalho?<select name="sucursales"><option>Sim</option><option>Não</option><option>A definir</option></select></label>
+                  <label class="full">Áreas, departamentos ou centros de custo<textarea name="areas" placeholder="Ex.: Operações, Segurança, RH, Manutenção..."></textarea></label>
+                  <label class="full">Cargos ou funções com regras documentais<textarea name="cargos" placeholder="Ex.: Eletricista, Motorista, Operador de grua..."></textarea></label>
+                </div>
+              </section>
+
+              <section class="wizard-section" data-title="Contratistas">
+                <h2>Contratistas</h2><p class="hint">Configure os tipos de empresa e as regras de cadastro.</p>
+                <div class="choice-grid">
+                  <label class="choice"><input type="checkbox" name="tipo_empresa_principal" /> Empresa principal</label>
+                  <label class="choice"><input type="checkbox" name="tipo_contratista" checked /> Contratista</label>
+                  <label class="choice"><input type="checkbox" name="tipo_subcontratista" /> Subcontratista</label>
+                  <label class="choice"><input type="checkbox" name="tipo_proveedor" /> Fornecedor</label>
+                  <label class="choice"><input type="checkbox" name="tipo_visitante" /> Visitante</label>
+                  <label class="choice"><input type="checkbox" name="tipo_otro" /> Outro</label>
+                </div>
+                <div class="form-grid top-space">
+                  <label class="full">Campos obrigatórios para contratistas<textarea name="campos_contratistas" placeholder="Razão social, identificação fiscal, responsável, contrato..."></textarea></label>
+                  <label class="full">Regras e observações<textarea name="reglas_contratistas"></textarea></label>
+                </div>
+              </section>
+
+              <section class="wizard-section" data-title="Trabalhadores">
+                <h2>Trabalhadores</h2><p class="hint">Selecione os campos necessários para o registro dos trabalhadores.</p>
+                <div class="choice-grid">
+                  <label class="choice"><input type="checkbox" name="trab_nombre" checked /> Nome completo</label>
+                  <label class="choice"><input type="checkbox" name="trab_documento" checked /> Documento</label>
+                  <label class="choice"><input type="checkbox" name="trab_empresa" checked /> Empresa</label>
+                  <label class="choice"><input type="checkbox" name="trab_cargo" checked /> Cargo / função</label>
+                  <label class="choice"><input type="checkbox" name="trab_supervisor" /> Supervisor</label>
+                  <label class="choice"><input type="checkbox" name="trab_centro_costo" /> Centro de custo</label>
+                  <label class="choice"><input type="checkbox" name="trab_area" /> Área</label>
+                  <label class="choice"><input type="checkbox" name="trab_fecha_ingreso" /> Data de ingresso</label>
+                  <label class="choice"><input type="checkbox" name="trab_fecha_termino" /> Data de término</label>
+                </div>
+                <div class="form-grid top-space"><label class="full">Outros campos necessários<textarea name="otros_trabajadores"></textarea></label></div>
+              </section>
+
+              <section class="wizard-section" data-title="Documentos">
+                <div class="section-heading compact"><div><h2>Documentos e periodicidades</h2><p class="hint">Inclua documentos de empresa, trabalhador, veículo ou bens.</p></div><button id="addDocumentButton" class="btn secondary" type="button">+ Adicionar documento</button></div>
+                <div class="responsive-table"><table><thead><tr><th>Tipo</th><th>Documento</th><th>Obrigatório</th><th>Periodicidade</th><th>Validação</th><th></th></tr></thead><tbody id="documentsBody"></tbody></table></div>
+              </section>
+
+              <section class="wizard-section" data-title="Regras de associação">
+                <h2>Regras de associação</h2><p class="hint">Indique quais documentos pertencem a cada cargo, empresa ou atividade.</p>
+                <div class="form-grid">
+                  <label class="full">Regras por cargo / função<textarea name="reglas_cargo" placeholder="Motorista → CNH + exame médico + treinamento"></textarea></label>
+                  <label class="full">Regras por empresa / contrato / atividade<textarea name="reglas_empresa"></textarea></label>
+                  <label class="full">Bloqueios de acesso ou credencial<textarea name="bloqueos" placeholder="Bloquear quando documento obrigatório estiver vencido ou reprovado."></textarea></label>
+                </div>
+              </section>
+
+              <section class="wizard-section" data-title="Fluxos de aprovação">
+                <h2>Fluxos de aprovação</h2><p class="hint">Defina os responsáveis e a sequência de validação.</p>
+                <div class="choice-grid">
+                  <label class="choice"><input type="checkbox" name="aprob_seguridad" /> Segurança / EHS</label>
+                  <label class="choice"><input type="checkbox" name="aprob_rrhh" /> RH</label>
+                  <label class="choice"><input type="checkbox" name="aprob_operacion" /> Operação</label>
+                  <label class="choice"><input type="checkbox" name="aprob_admin" /> Administrador</label>
+                  <label class="choice"><input type="checkbox" name="aprob_ia" /> Validação IA prévia</label>
+                  <label class="choice"><input type="checkbox" name="aprob_dupla" /> Dupla aprovação</label>
+                </div>
+                <div class="flow-preview"><span>Contratista</span><b>→</b><span>Upload</span><b>→</b><span>Validação</span><b>→</b><span>Aprovação</span><b>→</b><span>Liberação</span></div>
+                <div class="form-grid"><label class="full">Descrição do fluxo esperado<textarea name="flujo_desc"></textarea></label></div>
+              </section>
+
+              <section class="wizard-section" data-title="IA e integrações">
+                <h2>IA, integrações e relatórios</h2><p class="hint">Informe automações, sistemas integrados e resultados esperados.</p>
+                <div class="form-grid">
+                  <label class="full">Documentos para validação por IA<textarea name="ia_docs" placeholder="PILA, F30, licença, exame médico..."></textarea></label>
+                  <label class="full">Regras de IA esperadas<textarea name="ia_regras" placeholder="Validar identificação, nome, datas, vigência, risco..."></textarea></label>
+                  <label>Integração<select name="integracao"><option>Não</option><option>API</option><option>SFTP</option><option>SAP</option><option>Outro</option><option>A definir</option></select></label>
+                  <label>Notificações automáticas<select name="notificaciones"><option>Sim</option><option>Não</option><option>A definir</option></select></label>
+                  <label class="full">Relatórios e dashboards<textarea name="reportes" placeholder="Documentos vencidos, trabalhadores ativos, indicadores..."></textarea></label>
+                </div>
+              </section>
+
+              <section class="wizard-section" data-title="Revisão final">
+                <h2>Revisão final</h2><p class="hint">Confira o preenchimento antes de enviar para análise.</p>
+                <div id="reviewSummary" class="review-grid"></div>
+                <div class="review-actions"><button id="downloadButton" class="btn secondary" type="button">Baixar respostas JSON</button><button id="submitButton" class="btn primary" type="button">Enviar para revisão</button></div>
+              </section>
+
+              <footer class="wizard-actions">
+                <button id="previousButton" class="btn subtle" type="button">← Anterior</button>
+                <div><button id="saveButton" class="btn secondary" type="button">Salvar avanço</button><button id="nextButton" class="btn primary" type="button">Próximo →</button></div>
+              </footer>
+            </div>
+          </div>
+        </section>
+
+        <section id="reports" class="view">
+          <div class="empty-state"><div class="empty-icon">▤</div><h3>Relatórios</h3><p>Esta área será conectada aos dados reais dos projetos na próxima versão.</p><button class="btn secondary" data-view-link="dashboard">Voltar ao dashboard</button></div>
+        </section>
+
+        <section id="settings" class="view">
+          <div class="settings-card"><p class="eyebrow">CONFIGURAÇÕES</p><h3>Preferências do portal</h3><div class="form-grid top-space"><label>Idioma<select><option>Português</option><option>Español</option><option>English</option></select></label><label>Fuso horário<select><option>America/Sao_Paulo</option><option>America/Mexico_City</option><option>America/Bogota</option></select></label><label class="full">Ambiente<input value="Demonstração local — conexão Supabase pendente" disabled /></label></div></div>
+        </section>
+      </main>
+    </div>
   </div>
 
-<script src="js/app.js"></script>
+  <dialog id="projectDialog" class="modal">
+    <form id="projectForm" method="dialog" class="modal-card">
+      <div class="modal-header"><div><p class="eyebrow">NOVO PROJETO</p><h3>Criar implantação</h3></div><button class="icon-btn" value="cancel" aria-label="Fechar">×</button></div>
+      <div class="form-grid">
+        <label>Cliente<input name="client" required /></label>
+        <label>Projeto<input name="name" required placeholder="Implantação Gestão de Terceiros" /></label>
+        <label>País<select name="country"><option>México</option><option>Colômbia</option><option>Chile</option><option>Brasil</option><option>Peru</option><option>Paraguai</option></select></label>
+        <label>Idioma<select name="language"><option>Español</option><option>Português</option><option>English</option></select></label>
+        <label>Consultor<input name="consultant" value="Erika Chaves" /></label>
+        <label>Data prevista<input type="date" name="deadline" /></label>
+      </div>
+      <div class="modal-actions"><button class="btn subtle" value="cancel">Cancelar</button><button class="btn primary" id="createProjectButton" value="default">Criar projeto</button></div>
+    </form>
+  </dialog>
+
+  <script src="js/app.js"></script>
 </body>
 </html>

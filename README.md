@@ -1,26 +1,54 @@
 # 🌈 Rainbow Setup Portal
 
-Portal de levantamento de informações para parametrização da plataforma Rainbow.
+Portal de implantação e parametrização da plataforma Rainbow.
 
 ## Versão
 
-`v0.1` — base navegável, compatível com GitHub e Cloudflare Pages.
+`v0.2.0` — aplicação navegável com login demonstrativo, dashboard, gestão de projetos e wizard completo.
+
+## Funcionalidades
+
+- Login demonstrativo.
+- Dashboard de projetos.
+- Criação de novos projetos.
+- Busca e filtro de projetos.
+- Wizard de parametrização com 9 etapas.
+- Cadastro dinâmico de documentos.
+- Salvamento automático no `localStorage`.
+- Exportação das respostas em JSON.
+- Layout responsivo.
 
 ## Estrutura
 
 ```text
 index.html
-css/style.css
-js/app.js
+css/
+  style.css
+js/
+  app.js
+README.md
+.gitignore
 ```
 
 ## Publicação no Cloudflare Pages
 
-- Framework preset: **None**
+Ao conectar o repositório GitHub:
+
+- Framework preset: `None`
 - Build command: deixar em branco
 - Build output directory: `/`
-- Branch de produção: `main`
+- Production branch: `main`
 
-## Limitação atual
+## Acesso demonstrativo
 
-Nesta versão, as respostas são salvas no `localStorage` do navegador. A próxima etapa será conectar autenticação e banco de dados Supabase.
+- E-mail: `erika@rainbowtec.com.br`
+- Senha: `rainbow123`
+
+Nesta versão, qualquer e-mail e senha preenchidos permitem o acesso, pois a autenticação real ainda não foi conectada.
+
+## Próxima versão
+
+- Supabase Auth.
+- Banco PostgreSQL.
+- Controle de acesso por perfil.
+- Persistência compartilhada entre usuários.
