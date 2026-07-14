@@ -1,22 +1,26 @@
 # 🌈 Rainbow Setup Portal
 
-Portal para implantação e parametrização da plataforma Rainbow.
+Portal de levantamento de informações para parametrização da plataforma Rainbow.
 
-## Status
+## Versão
 
-🚧 Em desenvolvimento.
+`v0.1` — base navegável, compatível com GitHub e Cloudflare Pages.
 
-## Objetivo
+## Estrutura
 
-Centralizar todo o processo de implantação em uma única plataforma.
+```text
+index.html
+css/style.css
+js/app.js
+```
 
-## Roadmap
+## Publicação no Cloudflare Pages
 
-- [ ] Login
-- [ ] Dashboard
-- [ ] Projetos
-- [ ] Wizard de Parametrização
-- [ ] Upload de Arquivos
-- [ ] 
-- [ ] Painel do Consultor
-- [ ] Inteligência Artificial
+- Framework preset: **None**
+- Build command: deixar em branco
+- Build output directory: `/`
+- Branch de produção: `main`
+
+## Limitação atual
+
+Nesta versão, as respostas são salvas no `localStorage` do navegador. A próxima etapa será conectar autenticação e banco de dados Supabase.
