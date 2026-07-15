@@ -52,3 +52,4 @@ Nesta versão, qualquer e-mail e senha preenchidos permitem o acesso, pois a aut
 - Banco PostgreSQL.
 - Controle de acesso por perfil.
 - Persistência compartilhada entre usuários.
+- Deploy test 1
